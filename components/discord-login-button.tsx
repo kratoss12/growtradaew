@@ -17,7 +17,16 @@ export default function DiscordLoginButton() {
   return (
     <button
       onClick={signInWithDiscord}
-      className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+      style={{
+        padding: "10px 14px",
+        borderRadius: "10px",
+        background: "#5865F2",
+        color: "white",
+        fontSize: "14px",
+        fontWeight: 600,
+        border: "none",
+        cursor: "pointer",
+      }}
     >
       Sign in with Discord
     </button>

@@ -1,9 +1,20 @@
+import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+dotenv.config({ path: ".env.local" });
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl) {
+  throw new Error("SUPABASE_URL is missing from .env.local");
+}
+
+if (!supabaseServiceRoleKey) {
+  throw new Error("SUPABASE_SERVICE_ROLE_KEY is missing from .env.local");
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 function normalizeTitle(name) {
   return name.replace(/ /g, "_");
@@ -39,8 +50,9 @@ async function getImageFromWiki(itemName) {
     return null;
   }
 
-  // Look for a real image URL in the parsed HTML
-  const match = html.match(/https:\/\/static\.wikia\.nocookie\.net\/growtopia\/images\/[^"' )]+/i);
+  const match = html.match(
+    /https:\/\/static\.wikia\.nocookie\.net\/growtopia\/images\/[^"' )]+/i
+  );
 
   if (!match) {
     return null;
@@ -52,7 +64,9 @@ async function getImageFromWiki(itemName) {
 async function main() {
   const { data: items, error } = await supabase
     .from("items")
-    .select("id, name, image_url")
+    .select("id, name")
+    .is("image_url", null)
+    .limit(200)
     .order("id");
 
   if (error) {
@@ -60,7 +74,6 @@ async function main() {
   }
 
   for (const item of items) {
-
     try {
       const imageUrl = await getImageFromWiki(item.name);
 
@@ -84,7 +97,6 @@ async function main() {
       console.log(`Failed for ${item.name}: ${err.message}`);
     }
 
-    // Be polite to the wiki
     await new Promise((resolve) => setTimeout(resolve, 800));
   }
 

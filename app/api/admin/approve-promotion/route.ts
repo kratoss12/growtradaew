@@ -39,19 +39,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Listing not found." }, { status: 404 });
   }
 
-  if (
-    listing.promotion_payment_status !== "waiting_donation" &&
-    listing.promotion_payment_status !== "pending_verification"
-  ) {
+  // ✅ ONLY allow after user confirmed donation
+  if (listing.promotion_payment_status !== "pending_verification") {
     return NextResponse.json(
-      { error: "This listing does not have a promotion waiting for approval." },
-      { status: 400 }
-    );
-  }
-
-  if (!listing.promotion_days || !listing.promotion_assigned_world) {
-    return NextResponse.json(
-      { error: "Promotion details are incomplete." },
+      { error: "Listing is not ready for approval." },
       { status: 400 }
     );
   }
@@ -73,17 +64,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  const { error: worldError } = await supabase
+  // free world
+  await supabase
     .from("donation_worlds")
     .update({
       is_occupied: false,
       current_listing_id: null,
     })
     .eq("world_name", listing.promotion_assigned_world);
-
-  if (worldError) {
-    return NextResponse.json({ error: worldError.message }, { status: 500 });
-  }
 
   return NextResponse.json({
     message: "Promotion approved successfully.",

@@ -8,7 +8,38 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
+
     await supabase.auth.exchangeCodeForSession(code);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const discordUserId =
+        user.user_metadata?.provider_id?.toString() ||
+        user.user_metadata?.sub?.toString() ||
+        null;
+
+      const displayName =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.user_metadata?.preferred_username ||
+        user.email ||
+        "User";
+
+      const avatarUrl =
+        user.user_metadata?.avatar_url ||
+        user.user_metadata?.picture ||
+        null;
+
+      await supabase.from("profiles").upsert({
+        id: user.id,
+        display_name: displayName,
+        avatar_url: avatarUrl,
+        discord_user_id: discordUserId,
+      });
+    }
   }
 
   return NextResponse.redirect(`${origin}${next}`);

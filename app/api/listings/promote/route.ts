@@ -7,6 +7,13 @@ const PROMOTION_PRICES_BGL: Record<number, number> = {
   7: 2,   // 2 BGL
 };
 
+function formatPromotionPrice(value: number) {
+  if (value === 0.7) return "70 DL";
+  if (value === 1) return "1 BGL";
+  if (value === 2) return "2 BGL";
+  return `${value} BGL`;
+}
+
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
@@ -63,6 +70,7 @@ export async function POST(request: Request) {
     }
 
     if (
+      listing.promotion_payment_status === "awaiting_donation" ||
       listing.promotion_payment_status === "waiting_donation" ||
       listing.promotion_payment_status === "pending_verification"
     ) {
@@ -98,14 +106,16 @@ export async function POST(request: Request) {
     }
 
     const paymentRequiredBgl = PROMOTION_PRICES_BGL[promotionDays];
+    const requestedAt = new Date().toISOString();
 
     const { error: updateError } = await supabase
       .from("listings")
       .update({
         promotion_days: promotionDays,
         promotion_payment_required_bgl: paymentRequiredBgl,
-        promotion_payment_status: "waiting_donation",
+        promotion_payment_status: "awaiting_donation",
         promotion_assigned_world: world.world_name,
+        promotion_requested_at: requestedAt,
       })
       .eq("id", listingId);
 
@@ -126,7 +136,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      message: `Promotion requested. Please donate ${paymentRequiredBgl} BGL in world ${world.world_name}. After donation an admin will verify and activate your ${promotionDays}-day promotion.`,
+      message: `Donate ${formatPromotionPrice(paymentRequiredBgl)} in world ${world.world_name}. After donating, click Confirm Donation below. You have 20 minutes.`,
     });
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });

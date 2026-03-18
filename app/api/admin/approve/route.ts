@@ -31,23 +31,53 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid listing ID." }, { status: 400 });
   }
 
-  const expiresAt = new Date(
-    Date.now() + NORMAL_LISTING_DURATION_HOURS * 60 * 60 * 1000
-  ).toISOString();
-
   const { data: listing, error: listingError } = await supabase
     .from("listings")
-    .update({
-      status: "approved",
-      expires_at: expiresAt,
-      payment_status: "verified",
-    })
+    .select("*")
     .eq("id", listingId)
-    .select()
     .single();
 
   if (listingError || !listing) {
     return NextResponse.json({ error: "Listing not found." }, { status: 404 });
+  }
+
+  if (listing.status !== "pending") {
+    return NextResponse.json(
+      { error: "This listing is not pending approval." },
+      { status: 400 }
+    );
+  }
+
+  // High-value listing: only approve after user confirmed donation
+  if (
+    listing.payment_status &&
+    listing.payment_status !== "none" &&
+    listing.payment_status !== "pending_verification"
+  ) {
+    return NextResponse.json(
+      { error: "This high-value listing is not ready for approval." },
+      { status: 400 }
+    );
+  }
+
+  const expiresAt = new Date(
+    Date.now() + NORMAL_LISTING_DURATION_HOURS * 60 * 60 * 1000
+  ).toISOString();
+
+  const { error: updateError } = await supabase
+    .from("listings")
+    .update({
+      status: "approved",
+      expires_at: expiresAt,
+      payment_status:
+        listing.payment_status && listing.payment_status !== "none"
+          ? "verified"
+          : listing.payment_status,
+    })
+    .eq("id", listingId);
+
+  if (updateError) {
+    return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
   if (listing.assigned_world) {
