@@ -1,34 +1,22 @@
 "use client";
 
-import { createClient } from "../utils/supabase/client";
-
 export default function DiscordLoginButton() {
-  async function signInWithDiscord() {
-    const supabase = createClient();
+  async function handleLogin() {
+    const res = await fetch("/auth/discord");
+    const data = await res.json();
 
-    await supabase.auth.signInWithOAuth({
-      provider: "discord",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/`,
-      },
-    });
+    if (data?.url) {
+      window.location.href = data.url;
+    }
   }
 
   return (
     <button
-      onClick={signInWithDiscord}
-      style={{
-        padding: "10px 14px",
-        borderRadius: "10px",
-        background: "#5865F2",
-        color: "white",
-        fontSize: "14px",
-        fontWeight: 600,
-        border: "none",
-        cursor: "pointer",
-      }}
+      onClick={handleLogin}
+      className="rounded-2xl bg-indigo-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-indigo-400 sm:px-5 sm:py-3"
     >
-      Sign in with Discord
+      <span className="hidden sm:inline">Sign in with Discord</span>
+      <span className="sm:hidden">Discord</span>
     </button>
   );
 }

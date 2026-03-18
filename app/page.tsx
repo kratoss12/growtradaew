@@ -126,42 +126,42 @@ export default async function Home() {
 
   return (
     <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-sky-950 via-emerald-950 to-zinc-950 text-white">
-      <section className="mx-auto max-w-6xl px-6 py-24">
+      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
         <div className="text-center">
-          <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-emerald-300">
+          <p className="mb-4 inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300 sm:text-xs sm:tracking-[0.25em]">
             Growtopia Economy Tracker
           </p>
 
-          <h1 className="mb-6 text-5xl font-extrabold leading-tight sm:text-6xl lg:text-7xl">
+          <h1 className="mx-auto mb-5 max-w-5xl text-4xl font-extrabold leading-tight sm:text-5xl lg:text-7xl">
             Trade Growtopia Items
             <span className="block bg-gradient-to-r from-yellow-300 via-green-300 to-cyan-300 bg-clip-text text-transparent">
               Smarter, Faster, Safer
             </span>
           </h1>
 
-          <p className="mx-auto mb-10 max-w-3xl text-lg text-zinc-200">
+          <p className="mx-auto mb-8 max-w-3xl text-base leading-8 text-zinc-200 sm:mb-10 sm:text-lg">
             Track item prices, find the best deals, compare buy and sell listings,
             and trade using real player data from the marketplace.
           </p>
 
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
               href="/marketplace"
-              className="rounded-xl bg-emerald-400 px-8 py-3 font-semibold text-black shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300"
+              className="rounded-2xl bg-emerald-400 px-6 py-3 text-base font-bold text-black shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300 sm:px-8"
             >
               Browse Marketplace
             </Link>
 
             <Link
               href="/post"
-              className="rounded-xl border border-white/15 bg-white/10 px-8 py-3 font-semibold text-white backdrop-blur-sm transition hover:bg-white/15"
+              className="rounded-2xl border border-white/15 bg-white/10 px-6 py-3 text-base font-bold text-white backdrop-blur-sm transition hover:bg-white/15 sm:px-8"
             >
               Create Listing
             </Link>
           </div>
         </div>
 
-        <div className="mt-14 grid gap-4 md:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:mt-14 md:grid-cols-3">
           <div className="rounded-2xl border border-white/10 bg-white/10 p-5 text-left backdrop-blur-sm">
             <p className="text-sm font-semibold text-emerald-300">
               Live Listings
@@ -169,7 +169,7 @@ export default async function Home() {
             <p className="mt-2 text-3xl font-extrabold text-white">
               {totalLiveListings}
             </p>
-            <p className="mt-2 text-sm text-zinc-200">
+            <p className="mt-2 text-sm leading-6 text-zinc-200">
               Active item listings currently live on the marketplace.
             </p>
           </div>
@@ -181,7 +181,7 @@ export default async function Home() {
             <p className="mt-2 text-3xl font-extrabold text-white">
               {totalTrackedItems}
             </p>
-            <p className="mt-2 text-sm text-zinc-200">
+            <p className="mt-2 text-sm leading-6 text-zinc-200">
               Item markets with real buy and sell activity.
             </p>
           </div>
@@ -193,22 +193,22 @@ export default async function Home() {
             <p className="mt-2 text-3xl font-extrabold text-white">
               {totalFeatured}
             </p>
-            <p className="mt-2 text-sm text-zinc-200">
+            <p className="mt-2 text-sm leading-6 text-zinc-200">
               Hot promoted items getting extra visibility.
             </p>
           </div>
         </div>
 
-        <section className="mt-16 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <section className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm sm:mt-16 sm:p-6">
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="mb-2 inline-flex rounded-full border border-yellow-300/20 bg-yellow-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-yellow-200">
+              <p className="mb-2 inline-flex rounded-full border border-yellow-300/20 bg-yellow-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-yellow-200 sm:text-xs">
                 Trending Now
               </p>
-              <h2 className="text-3xl font-extrabold text-white">
+              <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
                 Hot item markets
               </h2>
-              <p className="mt-2 text-zinc-200">
+              <p className="mt-2 text-sm leading-6 text-zinc-200 sm:text-base">
                 Most active items based on live listings and recent marketplace activity.
               </p>
             </div>
@@ -238,8 +238,8 @@ export default async function Home() {
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                    <div className="flex min-w-0 items-center gap-4">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                         {item.imageUrl ? (
                           <img
                             src={item.imageUrl}
@@ -256,14 +256,14 @@ export default async function Home() {
                           {item.category}
                         </p>
 
-                        <h3 className="line-clamp-2 text-xl font-extrabold text-white group-hover:text-emerald-300">
+                        <h3 className="line-clamp-2 text-lg font-extrabold text-white group-hover:text-emerald-300 sm:text-xl">
                           {item.name}
                         </h3>
                       </div>
                     </div>
 
                     {item.hasPromoted ? (
-                      <span className="rounded-full bg-yellow-400 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-black">
+                      <span className="shrink-0 rounded-full bg-yellow-400 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-black">
                         Hot
                       </span>
                     ) : null}
